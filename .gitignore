@@ -1,0 +1,17 @@
+*
+
+!.gitignore
+!mise.toml
+!README.md
+
+!.devcontainer/
+!.devcontainer/devcontainer.json
+
+!golang/
+golang/.gitignore
+!golang/README.md
+!golang/main.go
+!golang/go.mod
+!golang/go.sum
+!golang/dagger.json
+
