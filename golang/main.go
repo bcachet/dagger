@@ -59,7 +59,7 @@ func New(
 func (g *Golang) Build(ctx context.Context,
 	// +optional
 	args []string) *dagger.Container {
-	command := append([]string{"go", "build", "-o", OUT_DIR, MOUNT_PATH}, args...)
+	command := append([]string{"go", "build", "-o", OUT_DIR}, args...)
 	return g.Container.
 		WithExec(command)
 }
