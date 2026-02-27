@@ -8,10 +8,17 @@
 !.devcontainer/devcontainer.json
 
 !golang/
-golang/.gitignore
 !golang/README.md
 !golang/main.go
 !golang/go.mod
 !golang/go.sum
 !golang/dagger.json
 
+!docker/
+!docker/README.md
+!docker/main.go
+!docker/go.mod
+!docker/go.sum
+!docker/dagger.json
+!docker/example/
+!docker/example/Dockerfile
