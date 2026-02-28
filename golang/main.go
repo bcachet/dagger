@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"dagger/golang/internal/dagger"
-	"fmt"
 )
 
 type Golang struct {
@@ -18,30 +17,23 @@ const (
 func New(
 	// +defaultPath="./"
 	source *dagger.Directory,
-	// Container registry
-	// +default="docker.io"
-	registry string,
-	// Golang image tag to use
-	// +default="1.25"
-	go_version string,
+	// Container
+	// +defaultAddress="docker.io/library/golang:1.25"
+	container *dagger.Container,
 	// golangci-lint version to use
 	// +default="2.10.1"
-	lint_version string,
+	golangci_lint string,
 	// govulncheck version to use
 	// +default="1.1.4"
-	govulncheck_version string,
+	govulncheck string,
 
 ) *Golang {
-	ctr := dag.Container().
-		From(fmt.Sprintf("%s/library/golang:%s", registry, go_version)).
+	ctr := container.
 		WithWorkdir(MOUNT_PATH).
 		WithMountedCache("/go/pkg/mod", dag.CacheVolume("go-mod_cache")).
 		WithEnvVariable("GOMODCACHE", "/go/pkg/mod").
 		WithMountedCache("/root/.cache/go-build", dag.CacheVolume("go-build_cache")).
 		WithEnvVariable("GOCACHE", "/root/.cache/go-build").
-		WithExec([]string{"go", "install", "golang.org/x/vuln/cmd/govulncheck@v" + govulncheck_version}).
-		WithExec([]string{"go", "install", "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v" + lint_version}).
-		WithMountedCache("/root/.cache/golangci-lint", dag.CacheVolume("golangci-lint_cache")).
 		WithFile(MOUNT_PATH+"/go.mod", source.File("./go.mod"))
 
 	exists, err := source.Exists(context.Background(), "./go.sum")
@@ -49,13 +41,15 @@ func New(
 		ctr = ctr.WithFile(MOUNT_PATH+"/go.sum", source.File("./go.sum"))
 	}
 
-	return &Golang{
+	g := &Golang{
 		Container: ctr.
 			WithExec([]string{"go", "mod", "download"}).
 			WithMountedDirectory(MOUNT_PATH, source),
 	}
+	return g.WithGolangciLint(golangci_lint).WithGovulncheck(govulncheck)
 }
 
+// Build go binary/library
 func (g *Golang) Build(ctx context.Context,
 	// +optional
 	args []string) *dagger.Container {
@@ -64,12 +58,29 @@ func (g *Golang) Build(ctx context.Context,
 		WithExec(command)
 }
 
+func (g *Golang) WithGolangciLint(
+	version string,
+) *Golang {
+	g.Container = g.Container.
+		WithExec([]string{"go", "install", "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v" + version}).
+		WithMountedCache("/root/.cache/golangci-lint", dag.CacheVolume("golangci-lint_cache"))
+	return g
+}
+
 // Lint runs golangci-Lint on the source code
 // +check
 func (g *Golang) Lint(ctx context.Context,
 ) *dagger.Container {
 	return g.Container.
 		WithExec([]string{"golangci-lint", "run", "--timeout", "5m"})
+}
+
+func (g *Golang) WithGovulncheck(
+	version string,
+) *Golang {
+	g.Container = g.Container.
+		WithExec([]string{"go", "install", "golang.org/x/vuln/cmd/govulncheck@v" + version})
+	return g
 }
 
 // VulnCheck runs govulncheck on the source code
