@@ -17,6 +17,7 @@ package main
 import (
 	"context"
 	"dagger/docker/internal/dagger"
+	"fmt"
 )
 
 type Docker struct {
@@ -25,9 +26,14 @@ type Docker struct {
 	// +private
 	BuildArgs []dagger.BuildArg
 	// +private
-	Secrets []*dagger.Secret
+	Secrets []Secret
 	// +private
 	SSH *dagger.Socket
+}
+
+type Secret struct {
+	ID     string
+	Secret *dagger.Secret
 }
 
 func New(
@@ -47,10 +53,27 @@ func (d *Docker) WithBuildArg(name string, value string) *Docker {
 	return d
 }
 
-// func (d *Docker) WithSecret(secret *dagger.Secret) *Docker {
-// 	d.Secrets = append(d.Secrets, secret)
-// 	return d
-// }
+func (d *Docker) WithSecret(id string, secret *dagger.Secret) *Docker {
+	d.Secrets = append(d.Secrets, Secret{
+		ID:     id,
+		Secret: secret,
+	})
+	return d
+}
+
+// +private
+func (d *Docker) namedSecrets(ctx context.Context) ([]*dagger.Secret, error) {
+	secrets := make([]*dagger.Secret, 0, len(d.Secrets))
+	for _, s := range d.Secrets {
+		plaintext, err := s.Secret.Plaintext(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("Cannot retrieve %s secret: %w", s.ID, err)
+		}
+		secret := dag.SetSecret(s.ID, plaintext)
+		secrets = append(secrets, secret)
+	}
+	return secrets, nil
+}
 
 func (d *Docker) WithSSH(socket *dagger.Socket) *Docker {
 	d.SSH = socket
@@ -66,13 +89,17 @@ func (d *Docker) Build(
 	// +default="linux/amd64"
 	platform dagger.Platform,
 
-) *dagger.Container {
+) (*dagger.Container, error) {
+	secrets, err := d.namedSecrets(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return d.Source.DockerBuild(dagger.DirectoryDockerBuildOpts{
 		Dockerfile: file,
 		Target:     target,
 		Platform:   platform,
 		BuildArgs:  d.BuildArgs,
-		Secrets:    d.Secrets,
+		Secrets:    secrets,
 		SSH:        d.SSH,
-	})
+	}), nil
 }
