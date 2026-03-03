@@ -23,3 +23,12 @@
 !docker/example/
 !docker/example/Dockerfile
 
+!protobuf/
+!protobuf/README.md
+!protobuf/main.go
+!protobuf/go.mod
+!protobuf/go.sum
+!protobuf/dagger.json
+!protobuf/example/
+!protobuf/example/*.proto
+!protobuf/example/buf.*.yaml
