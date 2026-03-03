@@ -15,3 +15,17 @@ To lint the Protobuf definitions
 ```sh
 dagger --mod github.com/bcachet/dagger/protobuf call lint stdout
 ```
+
+## Format protobuf files
+
+To format the Protobuf definitions and export the result
+
+```sh
+dagger --mod github.com/bcachet/dagger/protobuf call format export --path ./
+```
+
+To check for formatting drift in CI (fails if any file is unformatted)
+
+```sh
+dagger --mod github.com/bcachet/dagger/protobuf call format --args --exit-code stdout
+```

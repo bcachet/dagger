@@ -56,3 +56,13 @@ func (p *Protobuf) Lint(
 	return p.Container.
 		WithExec(append([]string{"buf", "lint"}, args...))
 }
+
+// Format proto files using buf format and return the formatted directory
+func (p *Protobuf) Format(
+	// +optional
+	args []string,
+) *dagger.Directory {
+	return p.Container.
+		WithExec(append([]string{"buf", "format", "--output", OUT_DIR}, args...)).
+		Directory(OUT_DIR)
+}
