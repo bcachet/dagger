@@ -17,5 +17,14 @@ dagger init --sdk go --source . --name my-module
 When you update a Dagger module, you may want to generate again the Go code that Dagger generated
 
 ```sh
-dagger generate
+dagger develop --sdk go
+```
+
+
+### Validate a module
+
+```sh
+(cd ./<MODULE> && dagger develop --sdk go)
+dagger --mod ./<MODULE> checks
+dagger --mod ./<MODULE> call <function>
 ```

@@ -30,5 +30,6 @@
 !protobuf/go.sum
 !protobuf/dagger.json
 !protobuf/example/
-!protobuf/example/*.proto
-!protobuf/example/buf.*.yaml
+!protobuf/example/v1/
+!protobuf/example/v1/*.proto
+!protobuf/example/v1/buf.*.yaml

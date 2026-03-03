@@ -48,3 +48,11 @@ func (p *Protobuf) Generate(
 	return p.Container.
 		WithExec(append([]string{"buf", "generate", "--output", OUT_DIR}, args...))
 }
+
+func (p *Protobuf) Lint(
+	// +optional
+	args []string,
+) *dagger.Container {
+	return p.Container.
+		WithExec(append([]string{"buf", "lint"}, args...))
+}
