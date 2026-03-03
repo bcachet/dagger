@@ -66,7 +66,8 @@
         "docker.docker",
         "kilocode.kilo-code",
         "anthropic.claude-code",
-        "golang.Go"
+        "golang.Go",
+        "hverlin.mise-vscode"
         ]
     },
     "settings": {
