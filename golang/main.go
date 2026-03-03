@@ -1,3 +1,7 @@
+// A Dagger module for Go projects.
+//
+// Provides build, lint (golangci-lint), and vulnerability scanning (govulncheck)
+// functions with integrated caching for fast, repeatable CI workflows.
 package main
 
 import (
@@ -10,14 +14,16 @@ type Golang struct {
 }
 
 const (
-	MOUNT_PATH = "/app"
-	OUT_DIR    = "/out/"
+	mountPath = "/app"
+	outDir    = "/out/"
 )
 
 func New(
+	ctx context.Context,
+	// Source directory of the Go project
 	// +defaultPath="./"
 	source *dagger.Directory,
-	// Container
+	// Go toolchain container image
 	// +defaultAddress="docker.io/library/golang:1.25"
 	container *dagger.Container,
 	// golangci-lint version to use
@@ -26,67 +32,70 @@ func New(
 	// govulncheck version to use
 	// +default="1.1.4"
 	govulncheck string,
-
-) *Golang {
+) (*Golang, error) {
 	ctr := container.
-		WithWorkdir(MOUNT_PATH).
+		WithWorkdir(mountPath).
 		WithMountedCache("/go/pkg/mod", dag.CacheVolume("go-mod_cache")).
 		WithEnvVariable("GOMODCACHE", "/go/pkg/mod").
 		WithMountedCache("/root/.cache/go-build", dag.CacheVolume("go-build_cache")).
 		WithEnvVariable("GOCACHE", "/root/.cache/go-build").
-		WithFile(MOUNT_PATH+"/go.mod", source.File("./go.mod"))
+		WithFile(mountPath+"/go.mod", source.File("./go.mod"))
 
-	exists, err := source.Exists(context.Background(), "./go.sum")
-	if err == nil && exists {
-		ctr = ctr.WithFile(MOUNT_PATH+"/go.sum", source.File("./go.sum"))
+	exists, err := source.Exists(ctx, "./go.sum")
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		ctr = ctr.WithFile(mountPath+"/go.sum", source.File("./go.sum"))
 	}
 
 	g := &Golang{
 		Container: ctr.
 			WithExec([]string{"go", "mod", "download"}).
-			WithMountedDirectory(MOUNT_PATH, source),
+			WithMountedDirectory(mountPath, source),
 	}
-	return g.WithGolangciLint(golangci_lint).WithGovulncheck(govulncheck)
+	return g.WithGolangciLint(golangci_lint).WithGovulncheck(govulncheck), nil
 }
 
-// Build go binary/library
-func (g *Golang) Build(ctx context.Context,
+// Build compiles the Go project and places the output binary in /out/.
+func (g *Golang) Build(
+	// Additional arguments passed to `go build` (e.g. `-tags netgo ./cmd/myapp`)
 	// +optional
-	args []string) *dagger.Container {
-	command := append([]string{"go", "build", "-o", OUT_DIR}, args...)
+	args []string,
+) *dagger.Directory {
+	command := append([]string{"go", "build", "-o", outDir}, args...)
 	return g.Container.
-		WithExec(command)
+		WithExec(command).
+		Directory(outDir)
 }
 
-func (g *Golang) WithGolangciLint(
-	version string,
-) *Golang {
-	g.Container = g.Container.
-		WithExec([]string{"go", "install", "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v" + version}).
-		WithMountedCache("/root/.cache/golangci-lint", dag.CacheVolume("golangci-lint_cache"))
-	return g
+// WithGolangciLint installs the specified version of golangci-lint in the container.
+func (g *Golang) WithGolangciLint(version string) *Golang {
+	return &Golang{
+		Container: g.Container.
+			WithExec([]string{"go", "install", "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v" + version}).
+			WithMountedCache("/root/.cache/golangci-lint", dag.CacheVolume("golangci-lint_cache")),
+	}
 }
 
 // Lint runs golangci-Lint on the source code
 // +check
-func (g *Golang) Lint(ctx context.Context,
-) *dagger.Container {
+func (g *Golang) Lint() *dagger.Container {
 	return g.Container.
 		WithExec([]string{"golangci-lint", "run", "--timeout", "5m"})
 }
 
-func (g *Golang) WithGovulncheck(
-	version string,
-) *Golang {
-	g.Container = g.Container.
-		WithExec([]string{"go", "install", "golang.org/x/vuln/cmd/govulncheck@v" + version})
-	return g
+// WithGovulncheck installs the specified version of govulncheck in the container.
+func (g *Golang) WithGovulncheck(version string) *Golang {
+	return &Golang{
+		Container: g.Container.
+			WithExec([]string{"go", "install", "golang.org/x/vuln/cmd/govulncheck@v" + version}),
+	}
 }
 
 // VulnCheck runs govulncheck on the source code
 // +check
-func (g *Golang) VulnCheck(ctx context.Context) *dagger.Container {
-
+func (g *Golang) VulnCheck() *dagger.Container {
 	return g.Container.
 		WithExec([]string{"govulncheck", "./..."})
 }

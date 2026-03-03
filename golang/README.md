@@ -3,7 +3,7 @@
 ## Build
 
 ```sh
-dagger --mod github.com/bcachet/dagger/golang --source . call build directory --path /out/ export --path ./out
+dagger --mod github.com/bcachet/dagger/golang --source . call build export --path ./out
 ```
 
 ## Lint
