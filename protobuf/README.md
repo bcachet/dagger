@@ -7,3 +7,11 @@ To generate the code associated to the Protobuf definitions located in `./exampl
 ```sh
 dagger --mod github.com/bcachet/dagger/protobuf --source example call generate directory --path /out export --path ./gen
 ```
+
+## Lint protobuf files
+
+To lint the Protobuf definitions
+
+```sh
+dagger --mod github.com/bcachet/dagger/protobuf call lint stdout
+```

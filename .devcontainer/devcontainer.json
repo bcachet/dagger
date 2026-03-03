@@ -45,7 +45,8 @@
   ],
   "remoteEnv": {
     "SSH_AUTH_SOCK": "/home/vscode/.bitwarden-ssh-agent.sock",
-    "SHELL": "/usr/bin/fish"
+    "SHELL": "/usr/bin/fish",
+    "JAVA_HOME": "/home/vscode/.local/share/mise/installs/java/latest"
   },
   "postCreateCommand": "/home/vscode/.local/bin/mise trust --yes --quiet && /home/vscode/.local/bin/mise install --yes",
   "features": {
@@ -60,23 +61,20 @@
         "esbenp.prettier-vscode",
         "github.vscode-pull-request-github",
         "redhat.vscode-yaml",
-        "foxundermoon.shell-format",
-        "Gruntfuggly.todo-tree",
-        "wayou.vscode-todo-highlight",
-        "Anthropic.claude-code",
         "GitHub.vscode-pull-request-github",
         "github.vscode-github-actions",
         "docker.docker",
         "kilocode.kilo-code",
+        "anthropic.claude-code",
         "golang.Go"
-      ],
-      "settings": {
-        "go.lintTool": "golangci-lint",
-        "go.alternateTools": {
-          "go": "/home/vscode/.local/share/mise/installs/go/latest/bin/go",
-          "gopls": "/home/vscode/.local/share/mise/installs/go-golang-org-x-tools-gopls/latest/bin/gopls",
-          "dlv": "/home/vscode/.local/share/mise/installs/go-github-com-go-delve-delve-cmd-dlv/latest/bin/dlv"
-        }
+        ]
+    },
+    "settings": {
+      "go.lintTool": "golangci-lint",
+      "go.alternateTools": {
+        "go": "/home/vscode/.local/share/mise/installs/go/latest/bin/go",
+        "gopls": "/home/vscode/.local/share/mise/installs/go-golang-org-x-tools-gopls/latest/bin/gopls",
+        "dlv": "/home/vscode/.local/share/mise/installs/go-github-com-go-delve-delve-cmd-dlv/latest/bin/dlv"
       }
     }
   }
