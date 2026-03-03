@@ -1,17 +1,7 @@
-// A generated module for Container functions
+// A Dagger module for building Docker images.
 //
-// This module has been generated via dagger init and serves as a reference to
-// basic module structure as you get started with Dagger.
-//
-// Two functions have been pre-created. You can modify, delete, or add to them,
-// as needed. They demonstrate usage of arguments and return types using simple
-// echo and grep commands. The functions can be called from the dagger CLI or
-// from one of the SDKs.
-//
-// The first line in this comment block is a short description line and the
-// rest is a long description with more detail on the module's purpose or usage,
-// if appropriate. All modules should have a short description.
-
+// Provides a builder that wraps Dagger's DockerBuild with support for
+// build arguments, build secrets, and SSH forwarding.
 package main
 
 import (
@@ -36,7 +26,9 @@ type Secret struct {
 	Secret *dagger.Secret
 }
 
+// New creates a Docker builder from the given source directory.
 func New(
+	// Source directory containing the Dockerfile
 	// +defaultPath="."
 	source *dagger.Directory,
 ) *Docker {
@@ -45,6 +37,7 @@ func New(
 	}
 }
 
+// WithBuildArg adds a build argument passed to docker build.
 func (d *Docker) WithBuildArg(name string, value string) *Docker {
 	d.BuildArgs = append(d.BuildArgs, dagger.BuildArg{
 		Name:  name,
@@ -53,6 +46,7 @@ func (d *Docker) WithBuildArg(name string, value string) *Docker {
 	return d
 }
 
+// WithSecret mounts a secret for use during the build (e.g. RUN --mount=type=secret).
 func (d *Docker) WithSecret(id string, secret *dagger.Secret) *Docker {
 	d.Secrets = append(d.Secrets, Secret{
 		ID:     id,
@@ -61,13 +55,13 @@ func (d *Docker) WithSecret(id string, secret *dagger.Secret) *Docker {
 	return d
 }
 
-// +private
+// namedSecrets resolves each secret's plaintext and re-registers it under its ID.
 func (d *Docker) namedSecrets(ctx context.Context) ([]*dagger.Secret, error) {
 	secrets := make([]*dagger.Secret, 0, len(d.Secrets))
 	for _, s := range d.Secrets {
 		plaintext, err := s.Secret.Plaintext(ctx)
 		if err != nil {
-			return nil, fmt.Errorf("Cannot retrieve %s secret: %w", s.ID, err)
+			return nil, fmt.Errorf("cannot retrieve %s secret: %w", s.ID, err)
 		}
 		secret := dag.SetSecret(s.ID, plaintext)
 		secrets = append(secrets, secret)
@@ -75,20 +69,24 @@ func (d *Docker) namedSecrets(ctx context.Context) ([]*dagger.Secret, error) {
 	return secrets, nil
 }
 
+// WithSSH forwards the given SSH socket into the build for use with RUN --mount=type=ssh.
 func (d *Docker) WithSSH(socket *dagger.Socket) *Docker {
 	d.SSH = socket
 	return d
 }
 
+// Build runs docker build and returns the resulting container image.
 func (d *Docker) Build(
 	ctx context.Context,
+	// Dockerfile path relative to the source directory
 	// +default="Dockerfile"
 	file string,
+	// Build stage target to stop at
 	// +default=""
 	target string,
+	// Target platform for the image
 	// +default="linux/amd64"
 	platform dagger.Platform,
-
 ) (*dagger.Container, error) {
 	secrets, err := d.namedSecrets(ctx)
 	if err != nil {
