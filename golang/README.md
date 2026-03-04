@@ -1,27 +1,20 @@
 # As a module
 
 ## Build
-
 ```sh
-dagger --mod github.com/bcachet/dagger/golang --source . call build export --path ./out
+dagger --mod github.com/bcachet/dagger/golang --source ./golang/example call build export --path ./out
 ```
 
 ## Lint
 
 ```sh
-dagger --mod github.com/bcachet/dagger/golang --source . call lint
+dagger --mod github.com/bcachet/dagger/golang --source ./golang/example call lint
 ```
 
 ## Vuln-check
 
-
 ```sh
-dagger --mod github.com/bcachet/dagger/golang --source . call vuln-check
-```
-
-## Perform code checks in //
-```sh
-dagger --mod github.com/bcachet/dagger/golang --source . check
+dagger --mod github.com/bcachet/dagger/golang --source ./golang/example call vuln-check
 ```
 
 # Toolchain
