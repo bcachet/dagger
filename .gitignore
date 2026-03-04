@@ -6,6 +6,11 @@
 
 !.devcontainer/
 !.devcontainer/devcontainer.json
+!.container-use/
+!.container-use/*.json
+!.claude/
+!.claude/*.json
+!CLAUDE.md
 
 !golang/
 !golang/README.md
@@ -13,6 +18,10 @@
 !golang/go.mod
 !golang/go.sum
 !golang/dagger.json
+!golang/example/
+!golang/example/*.go
+!golang/example/go.mod
+!golang/example/go.sum
 
 !docker/
 !docker/README.md

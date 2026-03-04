@@ -29,14 +29,3 @@ dagger --mod ./<MODULE> checks
 dagger --mod ./<MODULE> call <function>
 ```
 
-### Our tooling is configured through [`mise`](mise.jdx.dev)
-
-You can ensure that tooling is accessible in your current shell session with
-```sh
-mise activate
-```
-You can run tools through mise via
-```sh
-mise x -- <dagger|go>
-```
-
