@@ -5,6 +5,7 @@
 package main
 
 import (
+	"context"
 	"dagger/protobuf/internal/dagger"
 )
 
@@ -47,12 +48,15 @@ func (p *Protobuf) Generate(
 // Lint runs buf lint on the proto files.
 // +check
 func (p *Protobuf) Lint(
+	ctx context.Context,
 	// Additional arguments passed to `buf lint`
 	// +optional
 	args []string,
-) *dagger.Container {
-	return p.Container.
-		WithExec(append([]string{"buf", "lint"}, args...))
+) error {
+	_, err := p.Container.
+		WithExec(append([]string{"buf", "lint"}, args...)).
+		Sync(ctx)
+	return err
 }
 
 // Format runs buf format and returns the formatted proto files.

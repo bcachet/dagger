@@ -39,10 +39,8 @@ func (t *Tests) All(ctx context.Context) error {
 
 // Lint tests that the Protobuf module can lint the example proto files.
 func (t *Tests) Lint(ctx context.Context) error {
-	_, err := dag.Protobuf(dagger.ProtobufOpts{Source: t.Source}).
-		Lint(dagger.ProtobufLintOpts{}).
-		Sync(ctx)
-	return err
+	return dag.Protobuf(dagger.ProtobufOpts{Source: t.Source}).
+		Lint(ctx, dagger.ProtobufLintOpts{})
 }
 
 // Generate tests that the Protobuf module can generate code from the example proto files.

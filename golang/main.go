@@ -80,9 +80,11 @@ func (g *Golang) WithGolangciLint(version string) *Golang {
 
 // Lint runs golangci-Lint on the source code
 // +check
-func (g *Golang) Lint() *dagger.Container {
-	return g.Container.
-		WithExec([]string{"golangci-lint", "run", "--timeout", "5m"})
+func (g *Golang) Lint(ctx context.Context) error {
+	_, err := g.Container.
+		WithExec([]string{"golangci-lint", "run", "--timeout", "5m"}).
+		Sync(ctx)
+	return err
 }
 
 // WithGovulncheck installs the specified version of govulncheck in the container.
@@ -95,7 +97,10 @@ func (g *Golang) WithGovulncheck(version string) *Golang {
 
 // VulnCheck runs govulncheck on the source code
 // +check
-func (g *Golang) VulnCheck() *dagger.Container {
-	return g.Container.
-		WithExec([]string{"govulncheck", "./..."})
+func (g *Golang) VulnCheck(ctx context.Context) error {
+	_, err := g.Container.
+		WithExec([]string{"govulncheck", "./..."}).
+		Sync(ctx)
+	return err
+
 }

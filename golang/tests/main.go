@@ -54,16 +54,12 @@ func (t *Tests) Build(ctx context.Context) error {
 
 // Lint tests that the Golang module can lint the example Go project.
 func (t *Tests) Lint(ctx context.Context) error {
-	_, err := dag.Golang(dagger.GolangOpts{Source: t.Source}).
-		Lint().
-		Sync(ctx)
-	return err
+	return dag.Golang(dagger.GolangOpts{Source: t.Source}).
+		Lint(ctx)
 }
 
 // VulnCheck tests that the Golang module can run vulnerability checks on the example Go project.
 func (t *Tests) VulnCheck(ctx context.Context) error {
-	_, err := dag.Golang(dagger.GolangOpts{Source: t.Source}).
-		VulnCheck().
-		Sync(ctx)
-	return err
+	return dag.Golang(dagger.GolangOpts{Source: t.Source}).
+		VulnCheck(ctx)
 }
