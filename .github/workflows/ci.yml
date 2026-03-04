@@ -20,4 +20,5 @@ jobs:
         with:
           version: v0.19.11
           verb: call
-          args: --mod ./${{ matrix.module }}/tests call all
+          module: ./${{ matrix.module }}/tests
+          args: all
