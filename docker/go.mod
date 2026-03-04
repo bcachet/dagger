@@ -3,27 +3,14 @@ module dagger/docker
 go 1.25.6
 
 require (
-	dagger.io/dagger v0.20.0
+	dagger.io/dagger v0.19.11
 	github.com/Khan/genqlient v0.8.1
 	github.com/vektah/gqlparser/v2 v2.5.32
 	go.opentelemetry.io/otel v1.41.0
 	go.opentelemetry.io/otel/trace v1.41.0
 )
 
-require (
-	github.com/adrg/xdg v0.5.3 // indirect
-	github.com/agnivade/levenshtein v1.2.1 // indirect
-	github.com/alexflint/go-arg v1.6.1 // indirect
-	github.com/alexflint/go-scalar v1.2.0 // indirect
-	github.com/bmatcuk/doublestar/v4 v4.10.0 // indirect
-	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/goccy/go-yaml v1.19.2 // indirect
-	github.com/mitchellh/go-homedir v1.1.0 // indirect
-	github.com/urfave/cli/v3 v3.7.0 // indirect
-	golang.org/x/mod v0.33.0 // indirect
-	golang.org/x/tools v0.42.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
-)
+require github.com/cespare/xxhash/v2 v2.3.0 // indirect
 
 require (
 	github.com/99designs/gqlgen v0.17.87 // indirect

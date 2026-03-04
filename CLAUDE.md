@@ -6,4 +6,3 @@ You MUST inform the user how to view your work using `container-use log <env_id>
 
 Go/Dagger are handled through [`mise`](mise.jdx.dev). You can access them via `mise x -- go` or `mise x -- dagger`
 
-When creating new file, update .gitignore accordingly (it is very restrictive and only accept what is explicitly defined there)

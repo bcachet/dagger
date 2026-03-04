@@ -1,11 +1,16 @@
 *
 
 !.gitignore
-!mise.toml
 !README.md
 
+# Build environment
+!mise.toml
+
+# Devcontainer
 !.devcontainer/
 !.devcontainer/devcontainer.json
+
+# Claude + container-use isolation
 !.container-use/
 !.container-use/*.json
 !.claude/
@@ -13,32 +18,14 @@
 !CLAUDE.md
 
 !golang/
-!golang/README.md
-!golang/main.go
-!golang/go.mod
-!golang/go.sum
-!golang/dagger.json
-!golang/example/
-!golang/example/*.go
-!golang/example/go.mod
-!golang/example/go.sum
+!golang/*
+!golang/**
 
 !docker/
-!docker/README.md
-!docker/main.go
-!docker/go.mod
-!docker/go.sum
-!docker/dagger.json
-!docker/example/
-!docker/example/Dockerfile
+!docker/*
+!docker/**
 
 !protobuf/
-!protobuf/README.md
-!protobuf/main.go
-!protobuf/go.mod
-!protobuf/go.sum
-!protobuf/dagger.json
-!protobuf/example/
-!protobuf/example/v1/
-!protobuf/example/v1/*.proto
-!protobuf/example/v1/buf.*.yaml
+!protobuf/*
+!protobuf/**
+
