@@ -1,8 +1,0 @@
-{
-  "workdir": "/workdir",
-  "base_image": "ghcr.io/bcachet/containers/dev:latest",
-  "install_commands": [
-    "mise trust",
-    "mise install"
-  ]
-}
