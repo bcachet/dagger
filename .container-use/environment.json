@@ -1,9 +1,0 @@
-{
-  "workdir": "/workdir",
-  "base_image": "ghcr.io/bcachet/containers/dev:latest",
-  "install_commands": [
-    "mise trust && mise install && echo 'eval \"$(mise activate bash)\"' >> ~/.bashrc",
-    "sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && sudo tee /etc/apt/sources.list.d/docker.sources <<EOF\nTypes: deb\nURIs: https://download.docker.com/linux/ubuntu\nSuites: $(. /etc/os-release && echo \"${UBUNTU_CODENAME:-}\")\nComponents: stable\nSigned-By: /etc/apt/keyrings/docker.asc\nEOF",
-    "sudo apt-get update && sudo apt-get -y install --no-install-recommends docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && (getent group docker || sudo groupadd -r docker) && sudo usermod -aG docker vscode"
-  ]
-}
