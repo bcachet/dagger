@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/bcachet/dagger/protobuf/example";
+option go_package = "github.com/bcachet/helloworld";
 
-package example.v1;
+package helloworld.v1;
 
 // The greeting service definition.
 service GreeterService {

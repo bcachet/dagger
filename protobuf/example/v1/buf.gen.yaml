@@ -1,9 +1,0 @@
-version: v2
-plugins:
-  - remote: buf.build/protocolbuffers/go
-    out: ./
-    opt: module=github.com/bcachet/dagger/protobuf/example
-
-  - remote: buf.build/grpc/go
-    out: ./
-    opt: module=github.com/bcachet/dagger/protobuf/example
