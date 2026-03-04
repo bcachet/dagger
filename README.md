@@ -26,7 +26,7 @@ Install tools via [mise](https://mise.jdx.dev):
 mise install
 ```
 
-### Create a new module
+### Create a new module (event test module)
 
 ```sh
 export MODULE=my-module
@@ -43,6 +43,7 @@ cd $MODULE && dagger develop --sdk go
 
 ### Validate a module
 
+Our modules have tests (as defined in [Dagger module documentation](https://docs.dagger.io/reference/best-practices/modules/#module-tests))
 ```sh
 dagger --mod ./$MODULE/tests call all
 ```
