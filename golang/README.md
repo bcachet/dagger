@@ -1,3 +1,10 @@
+# Run module tests
+
+```sh
+# Will run lint/vuln-check/build tests against golang/example Go module
+dagger -m golang/tests/ --source golang/example call all
+```
+
 # As a module
 
 ## Build
