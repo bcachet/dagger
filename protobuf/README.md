@@ -1,31 +1,15 @@
-# As a module
-
-## Generate code out of protobuf file
-
-To generate the code associated to the Protobuf definitions located in `./example/` directory
+Generate, lint, and format Protobuf definitions using [buf](https://buf.build).
 
 ```sh
+# Generate code from proto files
 dagger --mod github.com/bcachet/dagger/protobuf --source example call generate directory --path /out export --path ./gen
-```
 
-## Lint protobuf files
-
-To lint the Protobuf definitions
-
-```sh
+# Lint proto files
 dagger --mod github.com/bcachet/dagger/protobuf call lint stdout
-```
 
-## Format protobuf files
-
-To format the Protobuf definitions and export the result
-
-```sh
+# Format proto files
 dagger --mod github.com/bcachet/dagger/protobuf call format export --path ./
-```
 
-To check for formatting drift in CI (fails if any file is unformatted)
-
-```sh
+# Check formatting in CI (fails if unformatted)
 dagger --mod github.com/bcachet/dagger/protobuf call format --args --exit-code stdout
 ```

@@ -1,31 +1,48 @@
-## dagger
+# daggerverse
 
-Personal collection of Dagger modules
+Personal collection of [Dagger](https://dagger.io) modules for CI/CD pipelines.
+
+## Modules
+
+* [`docker`](./docker)
+* [`golang`](./golang)
+* [`protobuf`](./protobuf)
+
+All those modules can be used as toolchains. 
+```sh
+export MODULE=golang
+dagger init
+dagger toolchain install github.com/bcachet/dagger/$MODULE
+dagger call $MODULE build
+```
 
 ## Development
 
-### Create a new Dagger module
+### Prerequisites
+
+Install tools via [mise](https://mise.jdx.dev):
 
 ```sh
-mkdir my-module
-cd my-module
+mise install
+```
+
+### Create a new module
+
+```sh
+export MODULE=my-module
+mkdir $MODULE
+cd $MODULE
 dagger init --sdk go --source . --name my-module
 ```
 
-### Regenerate dagger generated code
-
-When you update a Dagger module, you may want to generate again the Go code that Dagger generated
+### Regenerate Dagger scaffolding
 
 ```sh
-dagger develop --sdk go
+cd $MODULE && dagger develop --sdk go
 ```
-
 
 ### Validate a module
 
 ```sh
-(cd ./<MODULE> && dagger develop --sdk go)
-dagger --mod ./<MODULE> checks
-dagger --mod ./<MODULE> call <function>
+dagger --mod ./$MODULE/tests call all
 ```
-
