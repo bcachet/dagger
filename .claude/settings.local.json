@@ -1,10 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git:*)",
       "WebFetch(domain:docs.dagger.io)",
-      "Bash(dagger develop)",
-      "Bash(dagger functions)",
       "mcp__container-use__environment_list",
       "mcp__container-use__environment_add_service",
       "mcp__container-use__environment_checkpoint",
@@ -16,7 +13,8 @@
       "mcp__container-use__environment_file_write",
       "mcp__container-use__environment_open",
       "mcp__container-use__environment_run_cmd",
-      "mcp__container-use__environment_update_metadata"
+      "mcp__container-use__environment_update_metadata",
+      "mcp__container-use__environment_file_read",
     ]
   }
 }
