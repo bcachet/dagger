@@ -7,6 +7,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"dagger/tests/internal/dagger"
 
@@ -34,6 +35,8 @@ func (t *Tests) All(ctx context.Context) error {
 	p.Go(t.Build)
 	p.Go(t.Lint)
 	p.Go(t.VulnCheck)
+	p.Go(t.WithCgoDisabled)
+	p.Go(t.WithCgoEnabled)
 
 	return p.Wait()
 }
@@ -62,4 +65,47 @@ func (t *Tests) Lint(ctx context.Context) error {
 func (t *Tests) VulnCheck(ctx context.Context) error {
 	return dag.Golang(dagger.GolangOpts{Source: t.Source}).
 		VulnCheck(ctx)
+}
+
+// lddOutput returns the output of ldd on the given binary file using the golang container.
+func lddOutput(ctx context.Context, binary *dagger.File) (string, error) {
+	return dag.Container().
+		From("golang:1.25").
+		WithFile("/app", binary).
+		WithExec([]string{"sh", "-c", "ldd /app 2>&1 || true"}).
+		Stdout(ctx)
+}
+
+// WithCgoDisabled tests that a CGO-disabled binary is statically linked and does not require libc.
+func (t *Tests) WithCgoDisabled(ctx context.Context) error {
+	binary := dag.Golang(dagger.GolangOpts{Source: t.Source}).
+		WithCgoDisabled().
+		Build(dagger.GolangBuildOpts{}).
+		File("/example")
+
+	out, err := lddOutput(ctx, binary)
+	if err != nil {
+		return err
+	}
+	if !strings.Contains(out, "not a dynamic executable") {
+		return fmt.Errorf("binary is dynamically linked, expected no libc dependency: %s", out)
+	}
+	return nil
+}
+
+// WithCgoEnabled tests that a CGO-enabled binary is dynamically linked against libc.
+func (t *Tests) WithCgoEnabled(ctx context.Context) error {
+	binary := dag.Golang(dagger.GolangOpts{Source: t.Source}).
+		WithCgoEnabled().
+		Build(dagger.GolangBuildOpts{}).
+		File("/example")
+
+	out, err := lddOutput(ctx, binary)
+	if err != nil {
+		return err
+	}
+	if !strings.Contains(out, "libc") {
+		return fmt.Errorf("binary is statically linked, expected libc dependency: %s", out)
+	}
+	return nil
 }

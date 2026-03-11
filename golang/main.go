@@ -104,3 +104,20 @@ func (g *Golang) VulnCheck(ctx context.Context) error {
 	return err
 
 }
+
+// WithEnv sets an environment variable in the container.
+func (g *Golang) WithEnv(name, value string) *Golang {
+	return &Golang{
+		Container: g.Container.WithEnvVariable(name, value),
+	}
+}
+
+// WithCGOEnabled enables CGO in the container.
+func (g *Golang) WithCgoEnabled() *Golang {
+	return g.WithEnv("CGO_ENABLED", "1")
+}
+
+// WithCGODisabled disables CGO in the container.
+func (g *Golang) WithCgoDisabled() *Golang {
+	return g.WithEnv("CGO_ENABLED", "0")
+}
