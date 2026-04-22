@@ -10,7 +10,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.43.0
 )
 
-require github.com/dagger/otel-go v1.41.0
+require github.com/dagger/otel-go v1.43.0
 
 require go.opentelemetry.io/otel/sdk v1.43.0
 

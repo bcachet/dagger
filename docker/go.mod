@@ -5,7 +5,7 @@ go 1.25.6
 require (
 	dagger.io/dagger v0.20.5
 	github.com/Khan/genqlient v0.8.1
-	github.com/dagger/otel-go v1.41.0
+	github.com/dagger/otel-go v1.43.0
 	github.com/vektah/gqlparser/v2 v2.5.32
 	go.opentelemetry.io/otel v1.43.0
 	go.opentelemetry.io/otel/trace v1.43.0
